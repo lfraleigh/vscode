@@ -15,6 +15,7 @@ import { getHashedRemotesFromConfig } from './workspaceTags.js';
 import { splitLines } from '../../../../base/common/strings.js';
 import { MavenArtifactIdRegex, MavenDependenciesRegex, MavenDependencyRegex, GradleDependencyCompactRegex, GradleDependencyLooseRegex, MavenGroupIdRegex, JavaLibrariesToLookFor } from '../common/javaWorkspaceTags.js';
 import { hashAsync } from '../../../../base/common/hash.js';
+import { getAzureCppSdkPackageNamesFromVcpkgManifest, usesAzureCppSdkBetaRegistry } from '../common/cppWorkspaceTags.js';
 
 const MetaModulesToLookFor = [
 	// Azure packages
@@ -98,6 +99,7 @@ const ModulesToLookFor = [
 	'praisonai',
 	'qdrant',
 	'typescript',
+	'@typescript/native',
 	'@typescript/native-preview',
 	'tslib',
 	'eslint',
@@ -498,14 +500,23 @@ const GoModulesToLookFor = [
 	'github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets',
 	'github.com/Azure/azure-sdk-for-go/sdk/monitor/azquery',
 	'github.com/Azure/azure-sdk-for-go/sdk/monitor/azingest',
+	'github.com/Azure/azure-sdk-for-go/sdk/monitor/ingestion/azlogs',
+	'github.com/Azure/azure-sdk-for-go/sdk/monitor/query/azlogs',
+	'github.com/Azure/azure-sdk-for-go/sdk/monitor/query/azmetrics',
 	'github.com/Azure/azure-sdk-for-go/sdk/messaging/azeventhubs',
 	'github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus',
+	'github.com/Azure/azure-sdk-for-go/sdk/messaging/azwebpubsub',
+	'github.com/Azure/azure-sdk-for-go/sdk/messaging/eventgrid/azeventgrid',
+	'github.com/Azure/azure-sdk-for-go/sdk/messaging/eventgrid/aznamespaces',
+	'github.com/Azure/azure-sdk-for-go/sdk/messaging/eventgrid/azsystemevents',
+	'github.com/Azure/azure-sdk-for-go/sdk/batch/azbatch',
 	'github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig',
 	'github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos',
 	'github.com/Azure/azure-sdk-for-go/sdk/data/aztables',
 	'github.com/Azure/azure-sdk-for-go/sdk/containers/azcontainerregistry',
 	'github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai',
 	'github.com/Azure/azure-sdk-for-go/sdk/azidentity',
+	'github.com/Azure/azure-sdk-for-go/sdk/azidentity/cache',
 	'github.com/Azure/azure-sdk-for-go/sdk/azcore',
 	'github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/'
 ];
@@ -709,6 +720,7 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			"workspace.npm.vuepress" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.docusaurus" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.typescript" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.npm.@typescript/native" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.@typescript/native-preview" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.tslib" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.npm.eslint" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -1122,14 +1134,23 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/azsecrets" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/monitor/azquery" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/monitor/azingest" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/monitor/ingestion/azlogs" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/monitor/query/azlogs" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/monitor/query/azmetrics" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/messaging/azeventhubs" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/messaging/azservicebus" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/messaging/azwebpubsub" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/messaging/eventgrid/azeventgrid" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/messaging/eventgrid/aznamespaces" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/messaging/eventgrid/azsystemevents" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/batch/azbatch" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/data/azappconfig" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/data/azcosmos" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/data/aztables" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/containers/azcontainerregistry" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/ai/azopenai" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/azidentity" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/azidentity/cache" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/azcore" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/iotfirmwaredefense/armiotfirmwaredefense" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/aad/armaad" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
@@ -1353,7 +1374,26 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/windowsesu/armwindowsesu" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/windowsiot/armwindowsiot" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
 			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/workloadmonitor/armworkloadmonitor" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
-			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/workloads/armworkloads" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
+			"workspace.go.mod.github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/workloads/armworkloads" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-core-amqp" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-core" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-core-tracing-opentelemetry" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-data-appconfiguration" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-data-tables" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-identity" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-messaging-eventhubs-checkpointstore-blob" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-messaging-eventhubs" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-security-attestation" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-security-keyvault-administration" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-security-keyvault-certificates" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-security-keyvault-keys" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-security-keyvault-secrets" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-storage-blobs" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-storage-common" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-storage-files-datalake" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-storage-files-shares" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.azure-storage-queues" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true },
+			"workspace.cpp.vcpkg-config.azure-sdk-for-cpp.beta" : { "classification": "SystemMetaData", "purpose": "FeatureInsight", "isMeasurement": true }
 		}
 	*/
 	private async resolveWorkspaceTags(): Promise<Tags> {
@@ -1591,6 +1631,18 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 				}
 			});
 
+			const vcpkgJsonPromises = getFilePromises('vcpkg.json', this.fileService, this.textFileService, content => {
+				for (const packageName of getAzureCppSdkPackageNamesFromVcpkgManifest(content.value)) {
+					tags['workspace.cpp.' + packageName] = true;
+				}
+			});
+
+			const vcpkgConfigurationPromises = getFilePromises('vcpkg-configuration.json', this.fileService, this.textFileService, content => {
+				if (usesAzureCppSdkBetaRegistry(content.value)) {
+					tags['workspace.cpp.vcpkg-config.azure-sdk-for-cpp.beta'] = true;
+				}
+			});
+
 			const pomPromises = getFilePromises('pom.xml', this.fileService, this.textFileService, content => {
 				try {
 					let dependenciesContent;
@@ -1631,7 +1683,7 @@ export class WorkspaceTagsService implements IWorkspaceTagsService {
 				});
 			});
 
-			return Promise.all([...packageJsonPromises, ...requirementsTxtPromises, ...pipfilePromises, ...pomPromises, ...gradlePromises, ...androidPromises, ...goModPromises]).then(() => tags);
+			return Promise.all([...packageJsonPromises, ...requirementsTxtPromises, ...pipfilePromises, ...pomPromises, ...gradlePromises, ...androidPromises, ...goModPromises, ...vcpkgJsonPromises, ...vcpkgConfigurationPromises]).then(() => tags);
 		});
 	}
 
